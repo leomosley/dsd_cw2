@@ -15,7 +15,6 @@ CREATE TABLE student (
   student_mobile VARCHAR(15) NOT NULL UNIQUE,
   student_dob DATE NOT NULL,
 
-  -- Check emails are actually unique
   CONSTRAINT unique_edu_email UNIQUE (LOWER(student_edu_email)),
   CONSTRAINT unique_personal_email UNIQUE (LOWER(student_personal_email))
 ); 
@@ -36,7 +35,7 @@ CREATE TABLE tuition (
 
 CREATE TABLE tuition_payment (
   tuition_payment_id SERIAL PRIMARY KEY,
-  tuition_payment_reference VARCHAR(12) NOT NULL UNIQUE, -- SQL function to generate?
+  tuition_payment_reference VARCHAR(12) NOT NULL UNIQUE, 
   tuition_payment_amount DECIMAL(7, 2) NOT NULL,
   tuition_payment_date DATE NOT NULL,
 
@@ -83,7 +82,6 @@ CREATE TABLE staff (
   staff_mobile VARCHAR(15) NOT NULL UNIQUE,
   staff_dob DATE NOT NULL,
 
-  -- Check emails are actually unique
   CONSTRAINT unique_company_email UNIQUE (LOWER(staff_company_email)),
   CONSTRAINT unique_personal_email UNIQUE (LOWER(staff_personal_email))
 );
