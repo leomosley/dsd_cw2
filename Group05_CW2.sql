@@ -10,7 +10,7 @@ CREATE TABLE student (
   student_city VARCHAR(30) NOT NULL,
   student_postcode CHAR(8) NOT NULL,
   student_edu_email VARCHAR(150) NOT NULL,
-  student_personal_email VARCHAR(150) NOT NULL,
+  student_personal_email VARCHAR(150),
   student_landline VARCHAR(30) UNIQUE,
   student_mobile VARCHAR(15) NOT NULL UNIQUE,
   student_dob DATE NOT NULL,
