@@ -145,3 +145,7 @@ CREATE TABLE module_assignments (
   CONSTRAINT valid_due_date CONSTRAINT assignment_due_date >= assignment_set_date,
   FOREIGN KEY (module_id) REFERENCES modules (module_id)
 );
+
+CREATE TABLE module_assessment_grade (
+  
+);
