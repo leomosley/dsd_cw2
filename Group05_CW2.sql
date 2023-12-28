@@ -23,7 +23,7 @@ CREATE TABLE student (
 CREATE TABLE tuition (
   tuition_id SERIAL PRIMARY KEY,
   tuition_amount DECIMAL(7, 2) NOT NULL,
-  tuition_pad DECIMAL(7, 2) NOT NULL,
+  tuition_paid DECIMAL(7, 2) NOT NULL,
   tuition_remaining DECIMAL(7, 2) NOT NULL,
   tuition_remaining_perc DECIMAL(5, 2) NOT NULL,
   tuition_deadline DATE NOT NULL,
@@ -120,7 +120,7 @@ CREATE TABLE staff_hours (
   hour_id INT,
   staff_id INT,
   PRIMARY KEY (hour_id, staff_id),
-  FOREIGN KEY (hour_id) REFERENCES salary (hour_id),
+  FOREIGN KEY (hour_id) REFERENCES hours (hour_id),
   FOREIGN KEY (staff_id) REFERENCES staff (staff_id) 
 );
 
@@ -130,7 +130,7 @@ CREATE TABLE deduction (
   deduction_details VARCHAR(200),
   deduction_amount DECIMAL(8, 2) NOT NULL,
 
-  CONSTRAINT valid_deduction REFERENCES deduction_amount >= 0 
+  CONSTRAINT valid_deduction CHECK deduction_amount >= 0 
 );
 
 CREATE TABLE salary_payslip (
@@ -148,7 +148,7 @@ CREATE TABLE salary_payslip (
   hourly_rate DECIMAL(6, 2) NOT NULL,
 
   CONSTRAINT valid_net_pay CHECK (net_pay >= 0 AND net_pay <= gross_pay),
-  CONSTRAINT valid_gross_pay CHECK (gross_pay >= 0 AND gross_pay >= gross_pay),
+  CONSTRAINT valid_gross_pay CHECK (gross_pay >= 0 AND gross_pay >= net_pay),
   
   FOREIGN KEY (salary_id) REFERENCES salary (salary_id)
 );
