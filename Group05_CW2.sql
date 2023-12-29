@@ -1,5 +1,8 @@
 CREATE EXTENSION IF NOT EXISTS citext;
 
+-- ----------------------------
+-- Table structure for STUDENT
+-- ----------------------------
 CREATE TABLE student (
   student_id SERIAL PRIMARY KEY,
   student_number INT NOT NULL UNIQUE,
@@ -12,12 +15,15 @@ CREATE TABLE student (
   student_city VARCHAR(30) NOT NULL,
   student_postcode CHAR(8) NOT NULL,
   student_edu_email CITEXT NOT NULL UNIQUE,
-  student_personal_email CITEXT,
+  student_personal_email CITEXT UNIQUE,
   student_landline VARCHAR(30) UNIQUE,
   student_mobile VARCHAR(15) NOT NULL UNIQUE,
   student_dob DATE NOT NULL
 );
 
+-- ----------------------------
+-- Table structure for TUITION
+-- ----------------------------
 CREATE TABLE tuition (
   tuition_id SERIAL PRIMARY KEY,
   tuition_amount DECIMAL(7, 2) NOT NULL,
@@ -31,6 +37,9 @@ CREATE TABLE tuition (
   CONSTRAINT valid_tuition_remaining_perc CHECK (tuition_remaining_perc >= 0 AND tuition_remaining_perc <= 100)
 );
 
+-- ------------------------------------
+-- Table structure for TUITION_PAYMENT
+-- ------------------------------------
 CREATE TABLE tuition_payment (
   tuition_payment_id SERIAL PRIMARY KEY,
   tuition_payment_reference VARCHAR(12) NOT NULL UNIQUE, 
@@ -39,6 +48,9 @@ CREATE TABLE tuition_payment (
   CONSTRAINT valid_tuition_payment_amount CHECK (tuition_payment_amount >= 0)
 );
 
+-- -------------------------------------
+-- Table structure for STUDENT_PAYMENTS
+-- -------------------------------------
 CREATE TABLE student_payments (
   tuition_payment_id INT,
   tuition_id INT,
@@ -47,6 +59,9 @@ CREATE TABLE student_payments (
   FOREIGN KEY (tuition_id) REFERENCES tuition (tuition_id)
 );
 
+-- -------------------------------------
+-- Table structure for STUDENT_TUITION
+-- -------------------------------------
 CREATE TABLE student_tuition (
   student_id INT,
   tuition_id INT,
@@ -55,6 +70,9 @@ CREATE TABLE student_tuition (
   FOREIGN KEY (tuition_id) REFERENCES tuition (tuition_id)
 );
 
+-- --------------------------------
+-- Table structure for DEPARTMENTS
+-- --------------------------------
 CREATE TABLE departments (
   dep_id SERIAL PRIMARY KEY,
   dep_name VARCHAR(50) NOT NULL,
@@ -62,6 +80,9 @@ CREATE TABLE departments (
   dep_description VARCHAR(200)
 );
 
+-- --------------------------------
+-- Table structure for STAFF
+-- --------------------------------
 CREATE TABLE staff (
   staff_id SERIAL PRIMARY KEY,
   staff_number INT NOT NULL UNIQUE,
@@ -80,6 +101,9 @@ CREATE TABLE staff (
   staff_dob DATE NOT NULL
 );
 
+-- --------------------------------
+-- Table structure for SALARY
+-- --------------------------------
 CREATE TABLE salary (
   salary_id SERIAL PRIMARY KEY,
   salary_base DECIMAL(8, 2) NOT NULL,
@@ -90,6 +114,9 @@ CREATE TABLE salary (
   CONSTRAINT valid_bonus CHECK (salary_bonuses >= 0)
 );
 
+-- ---------------------------------
+-- Table structure for STAFF_SALARY
+-- ---------------------------------
 CREATE TABLE staff_salary (
   salary_id INT,
   staff_id INT,
@@ -98,6 +125,9 @@ CREATE TABLE staff_salary (
   FOREIGN KEY (staff_id) REFERENCES staff (staff_id)
 );
 
+-- ---------------------------
+-- Table structure for HOURS
+-- ---------------------------
 CREATE TABLE hours (
   hour_id SERIAL PRIMARY KEY,
   start_time TIME NOT NULL,
@@ -106,6 +136,9 @@ CREATE TABLE hours (
   CONSTRAINT valid_times CHECK (start_time < end_time)
 );
 
+-- --------------------------------
+-- Table structure for STAFF_HOURS
+-- --------------------------------
 CREATE TABLE staff_hours (
   hour_id INT,
   staff_id INT,
@@ -114,6 +147,9 @@ CREATE TABLE staff_hours (
   FOREIGN KEY (staff_id) REFERENCES staff (staff_id) 
 );
 
+-- --------------------------------
+-- Table structure for DEDUCTION
+-- --------------------------------
 CREATE TABLE deduction (
   deduction_id SERIAL PRIMARY KEY,
   deduction_title VARCHAR(50),
@@ -122,6 +158,9 @@ CREATE TABLE deduction (
   CONSTRAINT valid_deduction CHECK (deduction_amount >= 0) 
 );
 
+-- -----------------------------------
+-- Table structure for SALARY_PAYSLIP
+-- -----------------------------------
 CREATE TABLE salary_payslip (
   payslip_id SERIAL PRIMARY KEY,
   salary_id INT NOT NULL,
@@ -140,6 +179,9 @@ CREATE TABLE salary_payslip (
   FOREIGN KEY (salary_id) REFERENCES salary (salary_id)
 );
 
+-- -------------------------------------
+-- Table structure for SALARY_DEDUCTION
+-- -------------------------------------
 CREATE TABLE salary_deduction (
   deduction_id INT,
   salary_id INT,
@@ -148,12 +190,18 @@ CREATE TABLE salary_deduction (
   FOREIGN KEY (salary_id) REFERENCES salary (salary_id) 
 );
 
+-- -------------------------------------
+-- Table structure for DEPARTMENT_STAFF
+-- -------------------------------------
 CREATE TABLE department_staff (
   dep_staff_id SERIAL PRIMARY KEY,
   dep_id INT NOT NULL,
   FOREIGN KEY (dep_id) REFERENCES departments (dep_id)
 );
 
+-- ------------------------------------------
+-- Table structure for DEPARTMENT_STAFF_LIST
+-- ------------------------------------------
 CREATE TABLE department_staff_list (
   dep_staff_id INT,
   staff_id INT,
@@ -163,6 +211,9 @@ CREATE TABLE department_staff_list (
   FOREIGN KEY (staff_id) REFERENCES staff (staff_id)
 );
 
+-- -----------------------------
+-- Table structure for TEACHERS
+-- -----------------------------
 CREATE TABLE teachers (
   teacher_id SERIAL PRIMARY KEY,
   staff_id INT NOT NULL,
@@ -171,6 +222,9 @@ CREATE TABLE teachers (
   FOREIGN KEY (staff_id) REFERENCES staff (staff_id)
 );
 
+-- -----------------------------
+-- Table structure for COURSES
+-- -----------------------------
 CREATE TABLE courses (
   course_id SERIAL PRIMARY KEY,
   teacher_id INT NOT NULL,
@@ -182,6 +236,9 @@ CREATE TABLE courses (
   FOREIGN KEY (teacher_id) REFERENCES teachers (teacher_id)
 );
 
+-- --------------------------------------
+-- Table structure for DEPARTMENT_COURSES
+-- --------------------------------------
 CREATE TABLE department_courses (
   dep_id INT,
   course_id INT,
@@ -190,6 +247,9 @@ CREATE TABLE department_courses (
   FOREIGN KEY (course_id) REFERENCES courses (course_id)
 );
 
+-- -----------------------------
+-- Table structure for MODULES
+-- -----------------------------
 CREATE TABLE modules (
   module_id SERIAL PRIMARY KEY,
   teacher_id INT NOT NULL,
@@ -200,6 +260,9 @@ CREATE TABLE modules (
   FOREIGN KEY (teacher_id) REFERENCES teachers (teacher_id)
 );
 
+-- ---------------------------------
+-- Table structure for COURSE_MODULE
+-- ---------------------------------
 CREATE TABLE course_module (
   course_id INT,
   module_id INT,
@@ -208,6 +271,9 @@ CREATE TABLE course_module (
   FOREIGN KEY (module_id) REFERENCES modules (module_id)
 );
 
+-- ----------------------------------
+-- Table structure for STUDENT_COURSE
+-- ----------------------------------
 CREATE TABLE student_course (
   student_id INT,
   course_id INT,
@@ -216,6 +282,9 @@ CREATE TABLE student_course (
   FOREIGN KEY (course_id) REFERENCES courses (course_id)
 );
 
+-- --------------------------------
+-- Table structure for COURSE_REP
+-- --------------------------------
 CREATE TABLE course_rep (
   student_id INT,
   course_id INT,
@@ -224,6 +293,9 @@ CREATE TABLE course_rep (
   FOREIGN KEY (course_id) REFERENCES courses (course_id)
 );
 
+-- --------------------------------------------
+-- Table structure for STUDENT_COURSE_PROGRESS
+-- --------------------------------------------
 CREATE TABLE student_course_progress (
   student_id INT,
   course_id INT,
@@ -234,6 +306,9 @@ CREATE TABLE student_course_progress (
   FOREIGN KEY (course_id) REFERENCES courses (course_id)
 );
 
+-- -------------------------------------------
+-- Table structure for STUDENT_MODULE_PROGRESS
+-- -------------------------------------------
 CREATE TABLE student_module_progress (
   student_id INT,
   module_id INT,
@@ -244,6 +319,9 @@ CREATE TABLE student_module_progress (
   FOREIGN KEY (module_id) REFERENCES modules (module_id)
 );
 
+-- ---------------------------------------
+-- Table structure for MODULE_ASSIGNMENTS
+-- ---------------------------------------
 CREATE TABLE module_assignments (
   assignment_id SERIAL PRIMARY KEY,
   module_id INT NOT NULL,
@@ -258,6 +336,9 @@ CREATE TABLE module_assignments (
   FOREIGN KEY (module_id) REFERENCES modules (module_id)
 );
 
+-- ---------------------------------------
+-- Table structure for MODULE_ASSESSMENTS
+-- ---------------------------------------
 CREATE TABLE module_assessments (
   assessment_id SERIAL PRIMARY KEY,
   module_id INT NOT NULL,
@@ -274,6 +355,9 @@ CREATE TABLE module_assessments (
   FOREIGN KEY (module_id) REFERENCES modules (module_id)
 );
 
+-- --------------------------------------------
+-- Table structure for MODULE_ASSESSMENT_GRADE
+-- --------------------------------------------
 CREATE TABLE module_assessment_grade (
   assessment_id INT,
   student_id INT,
@@ -284,6 +368,9 @@ CREATE TABLE module_assessment_grade (
   FOREIGN KEY (student_id) REFERENCES student (student_id)
 );
 
+-- --------------------------------------------
+-- Table structure for MODULE_ASSIGNMENT_GRADE
+-- --------------------------------------------
 CREATE TABLE module_assignment_grade (
   assignment_id INT,
   student_id INT,
@@ -294,6 +381,9 @@ CREATE TABLE module_assignment_grade (
   FOREIGN KEY (student_id) REFERENCES student (student_id)
 );
 
+-- -------------------------------------
+-- Table structure for TEACHING_SESSION
+-- -------------------------------------
 CREATE TABLE teaching_session (
   session_id SERIAL PRIMARY KEY,
   module_id INT NOT NULL,
@@ -306,6 +396,9 @@ CREATE TABLE teaching_session (
   FOREIGN KEY (module_id) REFERENCES modules (module_id)
 );
 
+-- -------------------------------------
+-- Table structure for TEACHERS_SESSIONS
+-- -------------------------------------
 CREATE TABLE teachers_sessions (
   teacher_id INT,
   session_id INT,
@@ -314,6 +407,9 @@ CREATE TABLE teachers_sessions (
   FOREIGN KEY (session_id) REFERENCES teaching_session (session_id)
 );
 
+-- ------------------------------------------
+-- Table structure for ACADEMIC_HELP_SESSIONS
+-- ------------------------------------------
 CREATE TABLE academic_help_sessions (
   ah_session_id SERIAL PRIMARY KEY,
   student_id INT NOT NULL,
@@ -326,6 +422,9 @@ CREATE TABLE academic_help_sessions (
   FOREIGN KEY (student_id) REFERENCES student (student_id)
 );
 
+-- ------------------------------------------
+-- Table structure for TEACHERS_AH_SESSIONS
+-- ------------------------------------------
 CREATE TABLE teachers_ah_sessions (
   teacher_id INT,
   ah_session_id INT,
@@ -334,6 +433,9 @@ CREATE TABLE teachers_ah_sessions (
   FOREIGN KEY (ah_session_id) REFERENCES academic_help_sessions (ah_session_id)
 );
 
+-- -------------------------------
+-- Table structure for ATTENDANCE
+-- -------------------------------
 CREATE TABLE attendance (
   student_id INT,
   session_id INT,
