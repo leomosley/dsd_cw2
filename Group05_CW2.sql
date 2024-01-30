@@ -1,11 +1,18 @@
+-- Extension for case insensitive constraints
 CREATE EXTENSION IF NOT EXISTS citext;
 
 -- ----------------------------
 -- Table structure for STUDENT
 -- ----------------------------
+CREATE SEQUENCE student_id_seq;
 CREATE TABLE student (
   student_id SERIAL PRIMARY KEY,
-  student_number INT NOT NULL UNIQUE,
+  student_number VARCHAR(10) DEFAULT (
+    'sti' || to_char(nextval('student_id_seq'), 'FM000000')
+  ) UNIQUE NOT NULL,
+  student_edu_email CHAR(22) DEFAULT (
+    'sti' || to_char(currval('student_id_seq'), 'FM000000') || '@sti.edu.org'
+  ) UNIQUE NOT NULL,
   student_fname VARCHAR(50) NOT NULL,
   student_mname VARCHAR(50),
   student_lname VARCHAR(50) NOT NULL,
@@ -14,7 +21,6 @@ CREATE TABLE student (
   student_addr2 VARCHAR(30),
   student_city VARCHAR(30) NOT NULL,
   student_postcode CHAR(8) NOT NULL,
-  student_edu_email CITEXT NOT NULL UNIQUE,
   student_personal_email CITEXT UNIQUE,
   student_landline VARCHAR(30) UNIQUE,
   student_mobile VARCHAR(15) NOT NULL UNIQUE,
