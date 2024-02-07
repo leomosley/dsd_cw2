@@ -1,18 +1,47 @@
--- Extension for case insensitive constraints
-CREATE EXTENSION IF NOT EXISTS citext;
+CREATE OR REPLACE FUNCTION generate_random_string(length INT)
+RETURNS VARCHAR AS $$
+DECLARE
+  string VARCHAR;
+BEGIN
+  string := '';
+  FOR i IN 1..length LOOP
+    string := string || to_char(floor(random() * 10), 'FM0');
+  END LOOP;
+
+  RETURN string;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION generate_uid(length INT)
+RETURNS VARCHAR AS $$
+DECLARE
+  string VARCHAR;
+BEGIN
+  string := generate_random_string(length);
+
+  WHILE EXISTS (SELECT 1 FROM uids WHERE uid = string) LOOP
+    string := generate_random_string(length);
+  END LOOP;
+
+  INSERT INTO uids (uid) VALUES (string);
+
+  RETURN string;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TABLE uids (
+  uid TEXT PRIMARY KEY
+);
 
 -- ----------------------------
 -- Table structure for STUDENT
 -- ----------------------------
-CREATE SEQUENCE student_id_seq;
 CREATE TABLE student (
   student_id SERIAL PRIMARY KEY,
   student_number VARCHAR(10) DEFAULT (
-    'sti' || to_char(nextval('student_id_seq'), 'FM000000')
+    'sti' || generate_uid(7)
   ) UNIQUE NOT NULL,
-  student_edu_email CHAR(22) DEFAULT (
-    'sti' || to_char(currval('student_id_seq'), 'FM000000') || '@sti.edu.org'
-  ) UNIQUE NOT NULL,
+  student_edu_email CHAR(29) UNIQUE NOT NULL,
   student_fname VARCHAR(50) NOT NULL,
   student_mname VARCHAR(50),
   student_lname VARCHAR(50) NOT NULL,
@@ -21,11 +50,25 @@ CREATE TABLE student (
   student_addr2 VARCHAR(30),
   student_city VARCHAR(30) NOT NULL,
   student_postcode CHAR(8) NOT NULL,
-  student_personal_email CITEXT UNIQUE,
+  student_personal_email VARCHAR(150) UNIQUE,
   student_landline VARCHAR(30) UNIQUE,
   student_mobile VARCHAR(15) NOT NULL UNIQUE,
   student_dob DATE NOT NULL
 );
+
+CREATE OR REPLACE FUNCTION set_student_edu_email()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.student_edu_email := NEW.student_number || '@sti.edu.org';
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER insert_student_email_trigger
+BEFORE INSERT ON student
+FOR EACH ROW
+EXECUTE FUNCTION set_student_edu_email();
+
 
 -- ----------------------------
 -- Table structure for TUITION
@@ -48,7 +91,9 @@ CREATE TABLE tuition (
 -- ------------------------------------
 CREATE TABLE tuition_payment (
   tuition_payment_id SERIAL PRIMARY KEY,
-  tuition_payment_reference VARCHAR(12) NOT NULL UNIQUE, 
+  tuition_payment_reference VARCHAR(12) DEFAULT (
+    generate_uid(10)
+  ) NOT NULL UNIQUE, 
   tuition_payment_amount DECIMAL(7, 2) NOT NULL,
   tuition_payment_date DATE NOT NULL,
   CONSTRAINT valid_tuition_payment_amount CHECK (tuition_payment_amount >= 0)
@@ -91,21 +136,35 @@ CREATE TABLE departments (
 -- --------------------------------
 CREATE TABLE staff (
   staff_id SERIAL PRIMARY KEY,
-  staff_number INT NOT NULL UNIQUE,
   staff_fname VARCHAR(50) NOT NULL,
   staff_mname VARCHAR(50),
   staff_lname VARCHAR(50) NOT NULL,
+  staff_number VARCHAR(10) UNIQUE NOT NULL,
+  staff_company_email CHAR(29) UNIQUE NOT NULL,
   staff_pronouns VARCHAR(50) NOT NULL,
   staff_addr1 VARCHAR(30) NOT NULL,
   staff_addr2 VARCHAR(30),
   staff_city VARCHAR(30) NOT NULL,
   staff_postcode CHAR(8) NOT NULL,
-  staff_company_email CITEXT NOT NULL UNIQUE,
-  staff_personal_email CITEXT UNIQUE,
+  staff_personal_email VARCHAR(150) UNIQUE,
   staff_landline VARCHAR(30) UNIQUE,
   staff_mobile VARCHAR(15) NOT NULL UNIQUE,
   staff_dob DATE NOT NULL
 );
+
+CREATE OR REPLACE FUNCTION set_staff_company_email()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.staff_number := CONCAT(LEFT(NEW.staff_fname, 1), LEFT(NEW.staff_lname, 1), generate_uid(8));
+  NEW.staff_company_email := NEW.staff_number|| '@sti.edu.org';
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;  
+
+CREATE TRIGGER insert_staff_company_email_trigger
+BEFORE INSERT ON staff
+FOR EACH ROW
+EXECUTE FUNCTION set_staff_company_email();
 
 -- --------------------------------
 -- Table structure for SALARY
