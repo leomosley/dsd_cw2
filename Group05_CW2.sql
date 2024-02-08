@@ -57,10 +57,10 @@ CREATE TABLE uids (
 -- ----------------------------
 CREATE TABLE student (
   student_id SERIAL PRIMARY KEY,
-  student_number VARCHAR(10) DEFAULT (
+  student_number CHAR(10) DEFAULT (
     'sti' || generate_uid(7)
   ) UNIQUE NOT NULL,
-  student_edu_email VARCHAR(29) UNIQUE NOT NULL,
+  student_edu_email CHAR(22) UNIQUE NOT NULL,
   student_fname VARCHAR(50) NOT NULL,
   student_mname VARCHAR(50),
   student_lname VARCHAR(50) NOT NULL,
@@ -139,7 +139,7 @@ EXECUTE FUNCTION set_tuition_remaining();
 -- ------------------------------------
 CREATE TABLE tuition_payment (
   tuition_payment_id SERIAL PRIMARY KEY,
-  tuition_payment_reference VARCHAR(12) DEFAULT (
+  tuition_payment_reference CHAR(12) DEFAULT (
     CONCAT('PY', generate_uid(10))
   ) NOT NULL UNIQUE, 
   tuition_payment_amount DECIMAL(7, 2) NOT NULL,
@@ -187,8 +187,8 @@ CREATE TABLE staff (
   staff_fname VARCHAR(50) NOT NULL,
   staff_mname VARCHAR(50),
   staff_lname VARCHAR(50) NOT NULL,
-  staff_number VARCHAR(10) UNIQUE NOT NULL,
-  staff_company_email CHAR(29) UNIQUE NOT NULL,
+  staff_number CHAR(10) UNIQUE NOT NULL,
+  staff_company_email CHAR(22) UNIQUE NOT NULL,
   staff_pronouns VARCHAR(50) NOT NULL,
   staff_addr1 VARCHAR(30) NOT NULL,
   staff_addr2 VARCHAR(30),
