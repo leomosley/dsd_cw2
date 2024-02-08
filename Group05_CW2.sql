@@ -14,7 +14,7 @@ DECLARE
 BEGIN
   string := '';
   FOR i IN 1..length LOOP
-    string := string || to_char(floor(random() * 10), 'FM0');
+    string := CONCAT(string, to_char(floor(random() * 10), 'FM0'));
   END LOOP;
 
   RETURN string;
@@ -82,7 +82,7 @@ CREATE TABLE student (
 CREATE OR REPLACE FUNCTION set_student_edu_email()
 RETURNS TRIGGER AS $$
 BEGIN
-  NEW.student_edu_email := NEW.student_number || '@sti.edu.org';
+  NEW.student_edu_email := CONCAT(NEW.student_number '@sti.edu.org');
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -208,7 +208,7 @@ CREATE OR REPLACE FUNCTION set_staff_company_email()
 RETURNS TRIGGER AS $$
 BEGIN
   NEW.staff_number := CONCAT(LEFT(NEW.staff_fname, 1), LEFT(NEW.staff_lname, 1), generate_uid(8));
-  NEW.staff_company_email := NEW.staff_number|| '@sti.edu.org';
+  NEW.staff_company_email := CONCAT(NEW.staff_number, '@sti.edu.org');
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;  
