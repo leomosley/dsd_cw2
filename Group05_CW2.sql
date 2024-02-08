@@ -1,3 +1,12 @@
+/*
+  Group 5 DSD Coursework 2 Database Schema
+  ERD Link: https://drive.google.com/file/d/1iDu0xKDJ3Q3pOWQTRIYSET8nkVc8jzO_/view?usp=drive_link
+*/
+
+/* 
+  Function to generate and return a random string of 
+  numbers - length is specified through parameter (length INT).
+*/
 CREATE OR REPLACE FUNCTION generate_random_string(length INT)
 RETURNS VARCHAR AS $$
 DECLARE
@@ -12,6 +21,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+/* 
+  Function to generate and return a unique identifier of 
+  length specified through parameter (length INT).
+
+  Uses the UIDS table to store all generated uids to ensure
+  that they are all unique. 
+*/
 CREATE OR REPLACE FUNCTION generate_uid(length INT)
 RETURNS VARCHAR AS $$
 DECLARE
@@ -19,7 +35,7 @@ DECLARE
 BEGIN
   string := generate_random_string(length);
 
-  WHILE EXISTS (SELECT 1 FROM uids WHERE uid = string) LOOP
+  WHILE EXISTS (SELECT uid FROM uids WHERE uid = string) LOOP
     string := generate_random_string(length);
   END LOOP;
 
@@ -29,8 +45,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- ------------------------
+-- Table structure for UIDS
+-- ------------------------
 CREATE TABLE uids (
-  uid TEXT PRIMARY KEY
+  uid VARCHAR(250) PRIMARY KEY
 );
 
 -- ----------------------------
@@ -41,7 +60,7 @@ CREATE TABLE student (
   student_number VARCHAR(10) DEFAULT (
     'sti' || generate_uid(7)
   ) UNIQUE NOT NULL,
-  student_edu_email CHAR(29) UNIQUE NOT NULL,
+  student_edu_email VARCHAR(29) UNIQUE NOT NULL,
   student_fname VARCHAR(50) NOT NULL,
   student_mname VARCHAR(50),
   student_lname VARCHAR(50) NOT NULL,
@@ -56,6 +75,10 @@ CREATE TABLE student (
   student_dob DATE NOT NULL
 );
 
+/* 
+  Trigger function to create the student_edu_email from
+  the student number.
+*/
 CREATE OR REPLACE FUNCTION set_student_edu_email()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -64,11 +87,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+/* 
+  Trigger to insert the created student_edu_email into the 
+  student table.
+*/
 CREATE TRIGGER insert_student_email_trigger
 BEFORE INSERT ON student
 FOR EACH ROW
 EXECUTE FUNCTION set_student_edu_email();
-
 
 -- ----------------------------
 -- Table structure for TUITION
@@ -86,13 +112,35 @@ CREATE TABLE tuition (
   CONSTRAINT valid_tuition_remaining_perc CHECK (tuition_remaining_perc >= 0 AND tuition_remaining_perc <= 100)
 );
 
+/* 
+  Trigger function to calculate the amount of tuition remaning,
+  value and percentage. 
+*/
+CREATE OR REPLACE FUNCTION set_tuition_remaining()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.tuition_remaining = NEW.tuition_amount - NEW.tuition_paid;
+  NEW.tuition_remaining_perc = (NEW.tuition_paid / NEW.tuition_amount) * 100;.
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+/* 
+  Trigger to insert the calculated amount of tuittion remaining
+  into the tuition table.
+*/
+CREATE TRIGGER insert_tuition_remaning
+BEFORE INSERT ON tuition
+FOR EACH ROW
+EXECUTE FUNCTION set_tuition_remaining();
+
 -- ------------------------------------
 -- Table structure for TUITION_PAYMENT
 -- ------------------------------------
 CREATE TABLE tuition_payment (
   tuition_payment_id SERIAL PRIMARY KEY,
   tuition_payment_reference VARCHAR(12) DEFAULT (
-    generate_uid(10)
+    CONCAT('PY', generate_uid(10))
   ) NOT NULL UNIQUE, 
   tuition_payment_amount DECIMAL(7, 2) NOT NULL,
   tuition_payment_date DATE NOT NULL,
@@ -152,6 +200,10 @@ CREATE TABLE staff (
   staff_dob DATE NOT NULL
 );
 
+/* 
+  Trigger function to create the staff_company_email from
+  the staff members initials and staff_number.
+*/
 CREATE OR REPLACE FUNCTION set_staff_company_email()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -161,6 +213,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;  
 
+/* 
+  Trigger to insert the created staff_edu_email l into the 
+  staff table.
+*/
 CREATE TRIGGER insert_staff_company_email_trigger
 BEFORE INSERT ON staff
 FOR EACH ROW

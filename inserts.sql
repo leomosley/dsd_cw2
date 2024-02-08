@@ -11,7 +11,6 @@ VALUES
 ('Wally', 'Tiffanie', 'Long', null, '123 Main St', '8th Floor', 'Glasgow', 'U27 1JY', 'tlong8@sbwire.com', '1893931406', '6942592115', '2004-01-26'),
 ('Gayler', 'Nikos', 'Lorand', 'she', '456 Elm Ave', 'PO Box 43934', 'London', 'KR 3JR', 'nlorand9@businesswire.com', '9229076112', '6263756861', '2008-04-21');
 
-
 -- Insert into student table
 INSERT INTO student (student_fname, student_lname, student_pronouns, student_addr1, student_city, student_postcode, student_mobile, student_dob)
 VALUES ('John', 'Doe', 'he/him', '123 Main St', 'London', 'SW1A 1AA', '1234567890', '1990-01-01'),
