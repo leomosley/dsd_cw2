@@ -69,7 +69,7 @@ CREATE TABLE student (
   student_addr2 VARCHAR(30),
   student_city VARCHAR(30) NOT NULL,
   student_postcode CHAR(8) NOT NULL,
-  student_personal_email VARCHAR(150) UNIQUE,
+  student_personal_email VARCHAR(150),
   student_landline VARCHAR(30) UNIQUE,
   student_mobile VARCHAR(15) NOT NULL UNIQUE,
   student_dob DATE NOT NULL
@@ -77,24 +77,36 @@ CREATE TABLE student (
 
 /* 
   Trigger function to create the student_edu_email from
-  the student number.
+  the student number and ensure that the value for student_personal_email
+  is lowercase.
 */
-CREATE OR REPLACE FUNCTION set_student_edu_email()
+CREATE OR REPLACE FUNCTION set_student_emails()
 RETURNS TRIGGER AS $$
 BEGIN
-  NEW.student_edu_email := CONCAT(NEW.student_number '@sti.edu.org');
+  NEW.student_edu_email := CONCAT(NEW.student_number, '@sti.edu.org');
+
+  IF NEW.student_personal_email IS NOT NULL THEN 
+    NEW.student_personal_email := LOWER(NEW.student_personal_email);
+  END IF;
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 /* 
-  Trigger to insert the created student_edu_email into the 
-  student table.
+  Trigger to insert the created student_edu_email and updated
+  student_personal_email into the student table.
 */
 CREATE TRIGGER insert_student_email_trigger
 BEFORE INSERT ON student
 FOR EACH ROW
-EXECUTE FUNCTION set_student_edu_email();
+EXECUTE FUNCTION set_student_emails();
+
+/* 
+  Functional index to enforce case insensitive uniqueness of the 
+  student personal email.
+*/
+CREATE UNIQUE INDEX unique_student_personal_email_idx ON student (LOWER(student_personal_email));
 
 -- ----------------------------
 -- Table structure for TUITION
@@ -120,7 +132,8 @@ CREATE OR REPLACE FUNCTION set_tuition_remaining()
 RETURNS TRIGGER AS $$
 BEGIN
   NEW.tuition_remaining = NEW.tuition_amount - NEW.tuition_paid;
-  NEW.tuition_remaining_perc = (NEW.tuition_paid / NEW.tuition_amount) * 100;.
+  NEW.tuition_remaining_perc = (NEW.tuition_paid / NEW.tuition_amount) * 100;
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -201,26 +214,38 @@ CREATE TABLE staff (
 );
 
 /* 
-  Trigger function to create the staff_company_email from
-  the staff members initials and staff_number.
+  Trigger function to create the staff_number, the staff_company_email
+  using the staff_number and ensure that the value for staff_personal_email
+  is lowercase.
 */
-CREATE OR REPLACE FUNCTION set_staff_company_email()
+CREATE OR REPLACE FUNCTION set_staff_emails()
 RETURNS TRIGGER AS $$
 BEGIN
   NEW.staff_number := CONCAT(LEFT(NEW.staff_fname, 1), LEFT(NEW.staff_lname, 1), generate_uid(8));
   NEW.staff_company_email := CONCAT(NEW.staff_number, '@sti.edu.org');
+
+  IF NEW.staff_personal_email IS NOT NULL THEN 
+    NEW.staff_personal_email := LOWER(NEW.staff_personal_email);
+  END IF;
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;  
 
 /* 
-  Trigger to insert the created staff_edu_email l into the 
-  staff table.
+  Trigger to insert the staff_number, staff_company_email, and updated 
+  staff_peersonal_email into the staff table.
 */
-CREATE TRIGGER insert_staff_company_email_trigger
+CREATE TRIGGER insert_staff_emails_trigger
 BEFORE INSERT ON staff
 FOR EACH ROW
-EXECUTE FUNCTION set_staff_company_email();
+EXECUTE FUNCTION set_staff_emails();
+
+/* 
+  Functional index to enforce case insensitive uniqueness of the 
+  staff personal email.
+*/
+CREATE UNIQUE INDEX unique_staff_personal_email_idx ON staff (LOWER(staff_personal_email));
 
 -- --------------------------------
 -- Table structure for SALARY
