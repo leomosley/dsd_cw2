@@ -541,9 +541,9 @@ VALUES
 (2, 2),
 (3, 3);
 
--- --------------------------------
+-- ----------------------
 -- Records of ATTENDANCE
--- --------------------------------
+-- ----------------------
 INSERT INTO attendance (student_id, session_id, attendance_record)
 VALUES
 (1, 1, TRUE),
@@ -566,3 +566,111 @@ VALUES
 (9, 18, TRUE),
 (9, 19, FALSE),
 (9, 20, TRUE);
+
+-- ------------------
+-- Records of SALARY
+-- ------------------
+INSERT INTO salary (salary_base, salary_bonuses, salary_start_date, salary_end_date) 
+VALUES 
+(50000.00, 5000.00, '2023-01-01', '2023-12-31'),
+(60000.00, 6000.00, '2024-01-01', '2024-12-31'),
+(55000.00, 5500.00, '2025-01-01', NULL);
+
+-- ------------------------
+-- Records of STAFF_SALARY
+-- ------------------------
+INSERT INTO staff_salary (salary_id, staff_id)
+VALUES
+(1, 1), 
+(1, 2), 
+(1, 3), 
+(1, 4), 
+(1, 5),
+(1, 6), 
+(1, 7), 
+(1, 8),
+(2, 9), 
+(2, 10), 
+(2, 11), 
+(2, 12),
+(2, 13), 
+(2, 14), 
+(2, 15), 
+(2, 16),
+(3, 17), 
+(3, 18), 
+(3, 19), 
+(3, 20), 
+(3, 21), 
+(3, 22),
+(3, 23),
+(3, 24);
+
+-- -----------------
+-- Records of HOURS
+-- -----------------
+INSERT INTO hours (start_time, end_time, date)
+VALUES
+('09:00:00', '17:00:00', '2023-01-01'),
+('08:00:00', '16:30:00', '2023-01-02'),
+('10:00:00', '18:00:00', '2023-01-03');
+
+-- -----------------------
+-- Records of STAFF_HOURS
+-- -----------------------
+INSERT INTO staff_hours (hour_id, staff_id)
+VALUES
+(1, 1), 
+(1, 2), 
+(1, 3), 
+(1, 4), 
+(1, 5), 
+(1, 6), 
+(1, 7), 
+(1, 8),
+(2, 9), 
+(2, 10), 
+(2, 11), 
+(2, 12), 
+(2, 13), 
+(2, 14), 
+(2, 15), 
+(2, 16),
+(3, 17), 
+(3, 18), 
+(3, 19), 
+(3, 20), 
+(3, 21), 
+(3, 22), 
+(3, 23), 
+(3, 24);
+
+-- ---------------------
+-- Records of DEDUCTION
+-- ---------------------
+INSERT INTO deduction (deduction_title, deduction_details, deduction_amount)
+VALUES
+('Tax', 'Income tax deduction for January', 1500.00),
+('Health Insurance', 'Monthly health insurance premium', 200.00),
+('Pension', 'Contribution to employee pension plan', 500.00);
+
+-- -------------------------
+-- Records of SALARY_PAYSLIP
+-- -------------------------
+INSERT INTO salary_payslip (salary_id, issue_date, start_date, end_date, net_pay, gross_pay, payment_method, tax_code, tax_period, national_insurance_num, hourly_rate)
+VALUES
+(1, '2023-01-31', '2023-01-01', '2023-01-31', 4500.00, 5000.00, 'Direct Deposit', '1250L', 1, 'AB123456C', 20.00),
+(2, '2023-02-28', '2023-02-01', '2023-02-28', 5500.00, 6000.00, 'Cheque', '1200L', 2, 'CD987654A', 25.00),
+(3, '2023-03-31', '2023-03-01', '2023-03-31', 5000.00, 5500.00, 'Bank Transfer', '1300L', 3, 'EF345678B', 22.00);
+
+-- ----------------------------
+-- Records of SALARY_DEDUCTION
+-- ----------------------------
+INSERT INTO salary_deduction (deduction_id, salary_id)
+VALUES
+(1, 1), 
+(2, 1),
+(1, 2), 
+(3, 2),
+(2, 3), 
+(3, 3);
