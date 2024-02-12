@@ -1,6 +1,7 @@
 /*
   Group 5 DSD Coursework 2 Database Schema
-  ERD Link: https://drive.google.com/file/d/1iDu0xKDJ3Q3pOWQTRIYSET8nkVc8jzO_/view?usp=drive_link
+  ERD PDF: https://drive.google.com/file/d/1iDu0xKDJ3Q3pOWQTRIYSET8nkVc8jzO_/view?usp=drive_link
+  Github Repo: https://github.com/leomosley/dsd_cw2
 */
 
 /* 
@@ -57,9 +58,7 @@ CREATE TABLE uids (
 -- ----------------------------
 CREATE TABLE student (
   student_id SERIAL PRIMARY KEY,
-  student_number CHAR(10) DEFAULT (
-    'sti' || generate_uid(7)
-  ) UNIQUE NOT NULL,
+  student_number CHAR(10) UNIQUE NOT NULL,
   student_edu_email CHAR(22) UNIQUE NOT NULL,
   student_fname VARCHAR(50) NOT NULL,
   student_mname VARCHAR(50),
@@ -76,13 +75,14 @@ CREATE TABLE student (
 );
 
 /* 
-  Trigger function to create the student_edu_email from
-  the student number and ensure that the value for student_personal_email
+  Trigger function to create the student_number, the student_edu_email
+  using the student_number, and ensure that the value for student_personal_email
   is lowercase.
 */
 CREATE OR REPLACE FUNCTION set_student_emails()
 RETURNS TRIGGER AS $$
 BEGIN
+  NEW.student_number := CONCAT('sti', generate_uid(7));
   NEW.student_edu_email := CONCAT(NEW.student_number, '@sti.edu.org');
 
   IF NEW.student_personal_email IS NOT NULL THEN 
@@ -94,7 +94,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 /* 
-  Trigger to insert the created student_edu_email and updated
+  Trigger to insert the created student_number, student_edu_email, and updated
   student_personal_email into the student table.
 */
 CREATE TRIGGER insert_student_email_trigger
@@ -124,29 +124,6 @@ CREATE TABLE tuition (
   CONSTRAINT valid_tuition_remaining_perc CHECK (tuition_remaining_perc >= 0 AND tuition_remaining_perc <= 100)
 );
 
-/* 
-  Trigger function to calculate the amount of tuition remaning,
-  value and percentage. 
-*/
-CREATE OR REPLACE FUNCTION set_tuition_remaining()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.tuition_remaining = NEW.tuition_amount - NEW.tuition_paid;
-  NEW.tuition_remaining_perc = (NEW.tuition_paid / NEW.tuition_amount) * 100;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-/* 
-  Trigger to insert the calculated amount of tuittion remaining
-  into the tuition table.
-*/
-CREATE TRIGGER insert_tuition_remaning
-BEFORE INSERT ON tuition
-FOR EACH ROW
-EXECUTE FUNCTION set_tuition_remaining();
-
 -- ------------------------------------
 -- Table structure for TUITION_PAYMENT
 -- ------------------------------------
@@ -159,6 +136,33 @@ CREATE TABLE tuition_payment (
   tuition_payment_date DATE NOT NULL,
   CONSTRAINT valid_tuition_payment_amount CHECK (tuition_payment_amount >= 0)
 );
+
+/* 
+  Trigger function to update the tuition after an insert into the 
+  tuition_payment table. Calculates the tuition_paid, tuition_remaining, 
+  and tuition_remaining_perc. 
+*/
+CREATE OR REPLACE FUNCTION update_tuition_after_payment()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE tuition AS t
+  SET 
+    t.tuition_paid = t.tuition_paid + NEW.tuition_payment_amount,
+    t.tuition_remaining = t.tuition_remaining - NEW.tuition_payment_amount,
+    t.tuition_remaining_perc = ((t.tuition_amount - (t.tuition_paid + NEW.tuition_payment_amount)) / t.tuition_amount) * 100
+  WHERE t.tuition_id = .tuition_id;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+/* 
+  Trigger to update valeus in the tuition table after insert on 
+  tuition_payment. 
+*/
+CREATE TRIGGER after_tuition_payment_insert
+AFTER INSERT ON tuition_payment
+FOR EACH ROW
+EXECUTE FUNCTION update_tuition_after_payment();
 
 -- -------------------------------------
 -- Table structure for STUDENT_PAYMENTS
@@ -215,7 +219,7 @@ CREATE TABLE staff (
 
 /* 
   Trigger function to create the staff_number, the staff_company_email
-  using the staff_number and ensure that the value for staff_personal_email
+  using the staff_number, and ensure that the value for staff_personal_email
   is lowercase.
 */
 CREATE OR REPLACE FUNCTION set_staff_emails()
