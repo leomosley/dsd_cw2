@@ -1,4 +1,6 @@
--- Inserting sample data into STUDENT table
+-- -------------------
+-- Records of STUDENT
+-- -------------------
 INSERT INTO student (student_fname, student_mname, student_lname, student_pronouns, student_addr1, student_addr2, student_city, student_postcode, student_personal_email, student_landline, student_mobile, student_dob)
 VALUES
 ('Alex', NULL, 'Braun', 'He/Him', '123 Main Street', 'Mayfair', 'London', 'SW1A 1AA', 'alex.braun@gmail.com', '0201234570', '07891234572', '1995-05-15'),
@@ -11,7 +13,9 @@ VALUES
 ('Olivia', NULL, 'Taylor', 'She/Her', '101 Elm Street', NULL, 'Glasgow', 'G2 1AB', 'olivia.taylor@example.com', '0142345671', '07871234571', '2000-02-25'),
 ('William', 'John', 'Thomas', 'He/Him', '789 Oak Lane', NULL, 'Bristol', 'BS2 1AB', 'will.thomas@example.com', '0113456780', '07912345681', '1997-06-30');
 
--- Inserting sample data into STAFF table
+-- -----------------
+-- Records of STAFF
+-- -----------------
 INSERT INTO staff (staff_fname, staff_mname, staff_lname, staff_pronouns, staff_addr1, staff_addr2, staff_city, staff_postcode, staff_personal_email, staff_landline, staff_mobile, staff_dob)
 VALUES
 ('John', NULL, 'Smith', 'He/Him', '789 Elm Street', NULL, 'London', 'SW1A 2AA', 'john.smith@example.com', '0201234567', '07891234567', '1980-03-25'),
@@ -39,7 +43,9 @@ VALUES
 ('Emily', 'Grace', 'Wilson', 'She/Her', '789 Oak Lane', NULL, 'Glasgow', 'G2 1AB', 'emily.wilson@example.com', '0113256781', '07912345680', '1982-06-25'),
 ('Daniel', 'Thomas', 'Anderson', 'He/Him', '101 Cedar Street', NULL, 'Bristol', 'BS1 1AB', 'daniel.anderson@example.com', '0201234569', '07891234571', '1979-03-30');
 
--- Inserting sample data into DEPARTMENTS table
+-- -----------------------
+-- Records of DEPARTMENTS
+-- -----------------------
 INSERT INTO departments (dep_name, dep_type, dep_description)
 VALUES
 ('Arts', 'Educational', 'Department of Arts'),
@@ -49,7 +55,9 @@ VALUES
 ('Finance', 'Administrative', NULL),
 ('Human Resources', 'Administrative', NULL);
 
--- Inserting more sample data into TUITION table
+-- -------------------
+-- Records of TUITION
+-- -------------------
 INSERT INTO tuition (tuition_amount, tuition_paid, tuition_remaining, tuition_remaining_perc, tuition_deadline)
 VALUES
 (2800.00, 0, 2800.00, 0, '2024-07-01'),
@@ -63,7 +71,9 @@ VALUES
 (3600.00, 0, 3600.00, 0, '2024-07-10'),
 (1500.00, 0, 1500.00, 0, '2024-07-31');
 
--- Inserting sample data into TUITION_PAYMENT table
+-- ---------------------------
+-- Records of TUITION_PAYMENT
+-- ---------------------------
 INSERT INTO tuition_payment (tuition_payment_amount, tuition_payment_date)
 VALUES
 (300.00, '2024-03-15'),
@@ -82,7 +92,9 @@ VALUES
 (400.00, '2024-05-20'),
 (200.00, '2024-05-10');
 
--- Inserting sample data into STUDENT_PAYMENTS table
+-- ---------------------------
+-- Records of STUDENT_PAYMENT
+-- ---------------------------
 INSERT INTO student_payments (tuition_payment_id, tuition_id)
 VALUES
 (1, 1),
@@ -101,7 +113,9 @@ VALUES
 (14, 2),
 (15, 8);
 
--- Inserting sample data into STUDENT_TUITION table
+-- ---------------------------
+-- Records of STUDENT_TUITION
+-- ---------------------------
 INSERT INTO student_tuition (student_id, tuition_id)
 VALUES
 (1, 1),
@@ -115,7 +129,9 @@ VALUES
 (9, 9),
 (9, 10);
 
--- Inserting sample data into DEPARTMENT_STAFF table
+-- ---------------------------
+-- Records of DEPARTMENT_STAFF
+-- ---------------------------
 INSERT INTO department_staff (dep_id)
 VALUES
 (1),
@@ -125,7 +141,9 @@ VALUES
 (5),
 (6);
 
--- Inserting sample data into DEPARTMENT_STAFF_LIST table
+-- ---------------------------------
+-- Records of DEPARTMENT_STAFF_LIST
+-- ---------------------------------
 INSERT INTO department_staff_list (dep_staff_id, staff_id, staff_dep_head)
 VALUES
 (1, 1, TRUE),
@@ -149,10 +167,13 @@ VALUES
 (4, 19, FALSE),
 (4, 20, FALSE),
 (5, 21, TRUE),
-(6, 22, TRUE),
-(6, 23, FALSE);
+(5, 22, FALSE),
+(6, 23, TRUE),
+(6, 24, FALSE);
 
--- Inserting sample data into TEACHERS table
+-- --------------------
+-- Records of TEACHERS
+-- --------------------
 INSERT INTO teachers (staff_id, teacher_role, teacher_research_area)
 VALUES
 (1, 'Teaching Fellow', 'Drama'),
@@ -176,7 +197,9 @@ VALUES
 (19, 'Academic Tutor', 'Operations Research'),
 (20, 'Teaching Fellow', 'Mathematical Physics');
 
--- Inserting sample data into COURSES table
+-- --------------------
+-- Records of COURSES
+-- --------------------
 INSERT INTO courses (teacher_id, course_name, course_code, course_description, course_length)
 VALUES
 (1, 'Introduction to Theater', 101, 'An introductory course covering the basics of theater and performance art.', 2),
@@ -192,7 +215,9 @@ VALUES
 (18, 'Statistics for Decision Making', 204, 'A study of basic statistical methods for decision-making in various fields.', 3),
 (20, 'Mathematical Physics', 304, 'An advanced course integrating mathematical techniques with principles of physics.', 4);
 
--- Inserting sample data into DEPARTMENT_COURSES table
+-- -----------------------------
+-- Records of DEPARTMENT_COURSES
+-- ------------------------------
 INSERT INTO department_courses (dep_id, course_id)
 VALUES
 (1, 1),
@@ -208,7 +233,9 @@ VALUES
 (4, 11),
 (4, 12); 
 
--- Inserting sample data into MODULES table
+-- -------------------
+-- Records of MODULES
+-- -------------------
 INSERT INTO modules (teacher_id, module_name, module_code, module_description, academ_lvl)
 VALUES
 (1, 'Theater History', 10101, 'An overview of the history of theater from ancient times to the present.', 'L4'),
@@ -236,8 +263,9 @@ VALUES
 (20, 'Classical Mechanics', 30401, 'Study of the motion of objects and systems under the influence of forces.', 'L6'),
 (20, 'Quantum Mechanics', 30402, 'Introduction to the principles of quantum mechanics.', 'L7');
 
-
--- Inserting sample data into COURSE_MODULE table
+-- -------------------------
+-- Records of COURSE_MODULE
+-- -------------------------
 INSERT INTO course_module (course_id, module_id)
 VALUES
 (1, 1),
@@ -265,7 +293,9 @@ VALUES
 (12, 23),
 (12, 24);
 
--- Inserting sample data into STUDENT_COURSE table
+-- --------------------------
+-- Records of STUDENT_COURSE
+-- --------------------------
 INSERT INTO student_course (student_id, course_id)
 VALUES
 (1, 1),
@@ -279,7 +309,9 @@ VALUES
 (9, 9),
 (9, 10);
 
--- Inserting sample data into COURSE_REP table
+-- ----------------------
+-- Records of COURSE_REP
+-- ----------------------
 INSERT INTO course_rep (student_id, course_id)
 VALUES
 (1, 1),
@@ -293,7 +325,9 @@ VALUES
 (9, 9),
 (9, 10);
 
--- Inserting sample data into STUDENT_COURSE_PROGRESS table
+-- -----------------------------------
+-- Records of STUDENT_COURSE_PROGRESS
+-- -----------------------------------
 INSERT INTO student_course_progress (student_id, course_id, progress_perc)
 VALUES
 (1, 1, 22.12),
@@ -307,7 +341,9 @@ VALUES
 (9, 9, 48.04),
 (9, 10, 38.72);
 
--- Inserting sample data into STUDENT_MODULE_PROGRESS table
+-- -----------------------------------
+-- Records of STUDENT_MODULE_PROGRESS
+-- -----------------------------------
 INSERT INTO student_module_progress (student_id, module_id, progress_perc)
 VALUES
 (1, 1, 22.12),
@@ -331,7 +367,9 @@ VALUES
 (9, 19, 48.04),
 (9, 20, 38.72);
 
--- Inserting sample data into MODULE_ASSIGNMENTS table
+-- ------------------------------
+-- Records of MODULE_ASSIGNMENTS
+-- ------------------------------
 INSERT INTO module_assignments (module_id, assignment_title, assignment_set_date, assignment_due_date, assignment_set_time, assignment_due_time, assignment_description, assignment_type)
 VALUES
 (1, 'Theater History Assignment 1', '2024-02-15', '2024-03-01', '09:00:00', '23:59:59', 'Assignment on theater history related to Module 1', 'Worksheet'),
@@ -355,7 +393,9 @@ VALUES
 (19, 'Differential Calculus Assignment 1', '2024-02-15', '2024-03-01', '09:00:00', '23:59:59', 'Assignment on differential calculus related to Module 19', 'Worksheet'),
 (20, 'Integral Calculus Assignment 1', '2024-02-15', '2024-03-01', '09:00:00', '23:59:59', 'Assignment on integral calculus related to Module 20', 'Worksheet');
 
--- Inserting sample data into MODULE_ASSESSMENTS table
+-- ------------------------------
+-- Records of MODULE_ASSESSMENTS
+-- ------------------------------
 INSERT INTO module_assessments (module_id, assessment_title, assessment_set_date, assessment_due_date, assessment_set_time, assessment_due_time, assessment_description, assessment_type, assessment_weighting)
 VALUES
 (1, 'Theater History Midterm Exam', '2024-04-01', '2024-04-15', '09:00:00', '12:00:00', 'Midterm exam on theater history related to Module 1', 'Exam', 40.00),
@@ -379,8 +419,9 @@ VALUES
 (19, 'Differential Calculus Quiz', '2024-03-15', '2024-03-31', '09:00:00', '23:59:59', 'Quiz on differential calculus related to Module 19', 'Quiz', 20.00),
 (20, 'Integral Calculus Project', '2024-04-15', '2024-04-30', '09:00:00', '23:59:59', 'Project on integral calculus related to Module 20', 'Project', 40.00);
 
-
--- Inserting sample data into MODULE_ASSIGNMENT_GRADE table
+-- -----------------------------------
+-- Records of MODULE_ASSIGNMENT_GRADE
+-- -----------------------------------
 INSERT INTO module_assignment_grade (assignment_id, student_id, assignment_grade)
 VALUES
 (1, 1, 85),
@@ -404,8 +445,9 @@ VALUES
 (19, 9, 70),
 (20, 9, 88);
 
-
--- Inserting sample data into MODULE_ASSESSMENT_GRADE table
+-- -----------------------------------
+-- Records of MODULE_ASSESSMENT_GRADE
+-- -----------------------------------
 INSERT INTO module_assessment_grade (assessment_id, student_id, assessment_grade)
 VALUES
 (1, 1, 85),
@@ -429,7 +471,9 @@ VALUES
 (19, 9, 70),
 (20, 9, 88);
 
--- Inserting sample data into TEACHING_SESSION table
+-- ----------------------------
+-- Records of TEACHING_SESSION
+-- ----------------------------
 INSERT INTO teaching_session (module_id, session_type, session_start_time, session_length, session_date, session_notes)
 VALUES
 (1, 'Lecture', '09:00:00', 60.00, '2024-03-05', 'Introduction to Theater History'),
@@ -453,7 +497,9 @@ VALUES
 (19, 'Tutorial', '11:00:00', 120.00, '2024-03-23', 'Differential Calculus Problem Solving'),
 (20, 'Seminar', '10:00:00', 120.00, '2024-03-24', 'Integral Calculus Discussion Forum');
 
--- Inserting sample data into TEACHERS_SESSIONS table
+-- ----------------------------
+-- Records of TEACHER_SESSIONS
+-- ----------------------------
 INSERT INTO teachers_sessions (teacher_id, session_id)
 VALUES
 (1, 1),
@@ -477,21 +523,27 @@ VALUES
 (16, 19),
 (16, 20);
 
--- Inserting sample data into ACADEMIC_HELP_SESSIONS table
+-- ----------------------------------
+-- Records of ACADEMIC_HELP_SESSIONS
+-- ----------------------------------
 INSERT INTO academic_help_sessions (student_id, ah_session_type, ah_session_start_time, ah_session_length, ah_session_date, ah_session_notes)
 VALUES
 (1, 'One-on-One Tutoring', '14:00:00', 1.00, '2024-02-15', 'Tutoring session for exam preparation'),
 (2, 'One-on-One Tutoring', '10:00:00', 1.50, '2024-02-17', 'Tutoring session for math assignment'),
 (3, 'One-on-One Tutoring', '13:30:00', 2.00, '2024-02-18', 'Tutoring session for essay writing skills');
 
--- Inserting sample data into TEACHERS_AH_SESSIONS table
+-- --------------------------------
+-- Records of TEACHERS_AH_SESSIONS
+-- --------------------------------
 INSERT INTO teachers_ah_sessions (teacher_id, ah_session_id)
 VALUES
 (1, 1),
 (2, 2),
 (3, 3);
 
--- Inserting sample data into ATTENDANCE table
+-- --------------------------------
+-- Records of ATTENDANCE
+-- --------------------------------
 INSERT INTO attendance (student_id, session_id, attendance_record)
 VALUES
 (1, 1, TRUE),
