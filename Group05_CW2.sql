@@ -108,6 +108,8 @@ EXECUTE FUNCTION set_student_emails();
 */
 CREATE UNIQUE INDEX unique_student_personal_email_idx ON student (LOWER(student_personal_email));
 
+CREATE INDEX idx_student_student_number ON student(student_number);
+
 -- -------------------
 -- Records of STUDENT
 -- -------------------
@@ -154,6 +156,8 @@ VALUES
 (3500.00, 0, 3500.00, 0, '2024-08-05'),
 (3600.00, 0, 3600.00, 0, '2024-07-10'),
 (1500.00, 0, 1500.00, 0, '2024-07-31');
+
+CREATE INDEX idx_tuition_tuition_id ON tuition(tuition_id);
 
 -- ------------------------------------
 -- Table structure for TUITION_PAYMENT
@@ -228,6 +232,8 @@ AFTER INSERT ON student_payments
 FOR EACH ROW
 EXECUTE FUNCTION update_tuition_after_payment();
 
+CREATE INDEX idx_student_payments_tuition_id ON student_payments(tuition_id);
+
 -- ---------------------------
 -- Records of STUDENT_PAYMENT
 -- ---------------------------
@@ -259,6 +265,8 @@ CREATE TABLE student_tuition (
   FOREIGN KEY (student_id) REFERENCES student (student_id),
   FOREIGN KEY (tuition_id) REFERENCES tuition (tuition_id)
 );
+
+CREATE INDEX idx_student_tuition_student_id ON student_tuition(student_id);
 
 -- ---------------------------
 -- Records of STUDENT_TUITION
@@ -836,6 +844,9 @@ CREATE TABLE student_course (
   FOREIGN KEY (course_id) REFERENCES courses (course_id)
 );
 
+CREATE INDEX idx_student_course_student_id ON student_course(student_id);
+CREATE INDEX idx_student_course_course_id ON student_course(course_id);
+
 -- --------------------------
 -- Records of STUDENT_COURSE
 -- --------------------------
@@ -1271,3 +1282,79 @@ VALUES
 (9, 18, TRUE),
 (9, 19, FALSE),
 (9, 20, TRUE);
+
+-- ------
+-- VIEWS 
+-- ------
+/* 
+  View to retrieve the contact information of students.
+*/
+
+CREATE OR REPLACE VIEW student_contact_information AS
+SELECT
+  student_number AS "Student Number",
+  CONCAT_WS(' ', student_fname, student_mname, student_lname) AS "Name",
+  student_edu_email AS "Student Email",
+  student_personal_email AS "Personal Email",
+  student_mobile AS "Mobile",
+  student_landline AS "Landline",
+  CONCAT_WS(', ', student_addr1, student_addr2, student_city, student_postcode)
+FROM student
+ORDER BY "Student Number"; 
+
+/* 
+  View to retrieve the contact information of staff members.
+*/
+CREATE OR REPLACE VIEW staff_contact_information AS
+SELECT
+  staff_number AS "Staff Number",
+  CONCAT_WS(' ', staff_fname, staff_mname, staff_lname) AS "Name",
+  staff_company_email AS "Company Email",
+  staff_personal_email AS "Personal Email",
+  staff_mobile AS "Mobile",
+  staff_landline AS "Landline",
+  CONCAT_WS(', ', staff_addr1, staff_addr2, staff_city, staff_postcode)
+FROM staff
+ORDER BY "Staff Number"; 
+
+/* 
+  View to retrieve information about the courses students are enrolled in.
+*/
+CREATE OR REPLACE VIEW student_course_information AS
+SELECT
+  s.student_number AS "Student Number",
+  CONCAT_WS(' ', student_fname, student_mname, student_lname) AS "Name",
+  c.course_name AS "Course",
+  c.course_code AS "Course Code",
+  c.course_id AS "Course ID"
+FROM
+  student AS s
+  JOIN student_course AS sc ON s.student_id = sc.student_id
+  JOIN courses AS c ON sc.course_id = c.course_id
+ORDER BY "Student Number";
+
+/* 
+  View to retrieve information about students tuition.
+*/
+CREATE OR REPLACE VIEW student_tuition_information AS
+SELECT
+  s.student_number AS "Student Number",
+  CONCAT_WS(' ', student_fname, student_mname, student_lname) AS "Name",
+  t.tuition_id AS "Tuition ID",
+  t.tuition_amount AS "Tuition Amount",
+  t.tuition_paid AS "Tuition Paid",
+  t.tuition_remaining AS "Tuition Remaining",
+  CONCAT(t.tuition_remaining_perc, '%') AS "% Tuition Remaining",
+  COALESCE(sp.num_payments, 0) AS "Num Payments"
+FROM 
+  student AS s
+  JOIN student_tuition AS st ON s.student_id = st.student_id
+  JOIN tuition AS t ON st.tuition_id = t.tuition_id
+  LEFT JOIN (
+    SELECT 
+      tuition_id, 
+      COUNT(*) AS num_payments
+    FROM student_payments
+    GROUP BY tuition_id
+  ) AS sp ON t.tuition_id = sp.tuition_id
+ORDER BY "Tuition Remaining";
