@@ -1298,7 +1298,7 @@ SELECT
   student_personal_email AS "Personal Email",
   student_mobile AS "Mobile",
   student_landline AS "Landline",
-  CONCAT_WS(', ', student_addr1, student_addr2, student_city, student_postcode)
+  CONCAT_WS(', ', student_addr1, student_addr2, student_city, student_postcode) AS "Address"
 FROM student
 ORDER BY "Student Number"; 
 
