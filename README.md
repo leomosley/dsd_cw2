@@ -4,7 +4,7 @@ This is our groups physical implementation of the relational database for Stella
 along with inserts of mock data to test/prove functionalty of the database.
 
 ## Installation
-First create and connect to the database using your psql shell.
+First create and connect to the database using your psql shell. Replace `YOUR_DATABASE` with whatever you wish to name the database.
 
 ```sh
 CREATE DATABASE YOUR_DATABASE;
