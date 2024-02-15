@@ -6,11 +6,11 @@ along with inserts of mock data to test/prove functionalty of the database.
 ## Installation
 First create and connect to the database using your psql shell. Replace `YOUR_DATABASE` with whatever you wish to name the database.
 
-```sh
+```sql
 CREATE DATABASE YOUR_DATABASE;
 ```
 
-```sh
+```
 \c YOUR_DATABASE;
 ```
 
